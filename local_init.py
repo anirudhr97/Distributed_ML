@@ -1,4 +1,4 @@
-#Importing the relevant libraries
+#Importing the relevant libraries...
 from google.cloud import storage
 import numpy as np
 import pandas as pd
