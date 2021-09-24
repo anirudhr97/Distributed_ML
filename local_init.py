@@ -150,5 +150,3 @@ def initiator(NO_OF_NODES, DATASET_NAME, CHOICE, NO_OF_ITER, IF_ONES, c, FACTOR,
 ret = initiator(3, 'function0_2d.zip', 'StocGD', 0, 0, 3, 1, 'linear', 2)
 print(ret)
 
-
-
