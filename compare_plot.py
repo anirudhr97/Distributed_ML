@@ -57,15 +57,6 @@ with open('./{}/all_time_data_dict.csv'.format(EH_DIR)) as csv_file:
         if len(row):
             dict_eh[row[0]] = row[1]
 
-
-# print(dict_eh)
-# with open('coors.csv', mode='r') as infile:
-#     reader = csv.reader(infile)
-#     with open('coors_new.csv', mode='w') as outfile:
-#         writer = csv.writer(outfile)
-#         mydict = {rows[0]:rows[1] for rows in reader}
-
-
 with open('./{}/all_time_data_dict.csv'.format(SGC_DIR)) as csv_file:
     read = csv.reader(csv_file)
     for row in read:
@@ -92,3 +83,13 @@ plt.grid()
 plt.legend()
 plt.savefig('comparison_plot_redun=2.png')
 plt.show()
+
+
+#######################################################################################
+
+# print(dict_eh)
+# with open('coors.csv', mode='r') as infile:
+#     reader = csv.reader(infile)
+#     with open('coors_new.csv', mode='w') as outfile:
+#         writer = csv.writer(outfile)
+#         mydict = {rows[0]:rows[1] for rows in reader}
