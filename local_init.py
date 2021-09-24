@@ -143,12 +143,8 @@ def initiator(NO_OF_NODES, DATASET_NAME, CHOICE, NO_OF_ITER, IF_ONES, c, FACTOR,
   blobber('assgn_matrix.csv', './tmp/assgn_matrix.csv', bucket2, 'upload')
 
   return "The initiator has executed its job!"
-  
 
 # dataset_name=&no_of_iter=0&no_of_nodes=10&choice=StocGD&if_ones=0&c=6&factor=1.0&variety=multi-logistic&d=5
 
 ret = initiator(3, 'function0_2d.zip', 'StocGD', 0, 0, 3, 1, 'linear', 2)
 print(ret)
-
-
-

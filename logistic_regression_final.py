@@ -8,8 +8,6 @@ Learning Rates that work well:
 1) MNIST      :   0.025 with variable lrate with 0.013 exponent; factor=1
 2) CIFAR-10   :   
 3) CIFAR-100  :   
-
-
 '''
 
 import sys
@@ -25,7 +23,6 @@ import requests
 import os
 import csv
 import logging
-import dask.array as da
 from math import comb
 from scipy.special import expit as sigmoid
 from scipy.special import softmax as softmax_scipy
@@ -787,8 +784,6 @@ def master(dataset_name, test_dset, no_of_nodes, no_of_iter, lrate, strag, choic
 
   logging.shutdown()
   return folder_name
-
-
 
 
 #master(dataset_name, no_of_nodes, no_of_iter, lrate, strag, choice, c, factor, connections, timeout, algo, if_ones, if_custom_init_wt, if_change_assgn, if_verbose):

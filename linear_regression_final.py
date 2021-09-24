@@ -11,8 +11,6 @@ import os
 import csv
 import sys
 import logging
-import dask.dataframe as dd
-
 
 logging.basicConfig(filename='Messages.log', filemode='w',format='%(asctime)s.%(msecs)03d :  %(message)s', datefmt='%I:%M:%S', level=logging.DEBUG)
 logging.getLogger('matplotlib.font_manager').disabled = True
@@ -655,9 +653,6 @@ def master(dataset_name, test_dset, no_of_nodes, no_of_iter, lrate, strag, choic
 
   logging.shutdown()
   return folder_name
-
-
-
 
 
 #master(dataset_name, no_of_nodes, no_of_iter, lrate, strag, choice, c, factor, connections, timeout, algo, if_ones, if_custom_init_wt, if_change_assgn, if_verbose):

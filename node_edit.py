@@ -140,4 +140,3 @@ def node(request):
   blobber(gradname, '/tmp/grad.csv', bucket3, 'upload')
 
   return "Node{} has finished its job for iteration {}".format(ident, ITER_NO)
-
