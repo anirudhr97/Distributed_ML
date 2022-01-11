@@ -1,6 +1,5 @@
 """
-File containing the code that could be used to do the job of 'initiator' Google Function locally.
-This file is not fully done and is not required if 'init.py' is deployed as the 'initiator' Google Cloud Function.
+File containing the code that should be used in the 'initiator' Google Cloud Function.
 """
 from google.cloud import storage
 import numpy as np
@@ -104,18 +103,61 @@ def blobber(gcs_filename, inst_path, buckett, choice):
         blob.upload_from_filename(inst_path)
 
 
-def initiator(
-    NO_OF_NODES, DATASET_NAME, CHOICE, NO_OF_ITER, IF_ONES, c, FACTOR, VARIETY, red
-):
-
+def initiator(request):
+    request_json = request.get_json()
+    if (
+        request.args
+        and "dataset_name" in request.args
+        and "no_of_nodes" in request.args
+        and "no_of_iter" in request.args
+        and "choice" in request.args
+        and "if_ones" in request.args
+        and "c" in request.args
+        and "factor" in request.args
+        and "variety" in request.args
+        and "d" in request.args
+    ):
+        NO_OF_NODES = int(request.args.get("no_of_nodes"))
+        DATASET_NAME = request.args.get("dataset_name")
+        CHOICE = request.args.get("choice")
+        NO_OF_ITER = int(request.args.get("no_of_iter"))
+        IF_ONES = int(request.args.get("if_ones"))
+        c = int(request.args.get("c"))
+        FACTOR = float(request.args.get("factor"))
+        VARIETY = request.args.get("variety")
+        red = int(request.args.get("d"))
+    elif (
+        request_json
+        and "no_of_nodes" in request_json
+        and "dataset_name" in request_json
+        and "no_of_iter" in request_json
+        and "choice" in request_json
+        and "if_ones" in request_json
+        and "c" in request_json
+        and "factor" in request_json
+        and "variety" in request_json
+        and "d" in request_json
+    ):
+        NO_OF_NODES = int(request_json["no_of_nodes"])
+        DATASET_NAME = request_json["dataset_name"]
+        CHOICE = request_json["choice"]
+        NO_OF_ITER = int(request_json["no_of_iter"])
+        IF_ONES = int(request_json["if_ones"])
+        c = int(request_json["c"])
+        FACTOR = float(request_json["factor"])
+        VARIETY = request_json["variety"]
+        red = int(request_json["d"])
+    else:
+        return "Appropriate parameters not given. 'd', 'variety', 'factor', 'c', 'if_ones', 'no_of_iter', 'choice', 'dataset_name' and 'no_of_nodes' need to be given."
+    
     ##############################################################
     storage_client = storage.Client()
     bucket1 = storage_client.bucket("data_tum_base")
     bucket2 = storage_client.bucket("data_tum_master-to-node")
     ##############################################################
 
-    blobber(DATASET_NAME, "./tmp/data.zip", bucket1, "download")
-    data = Misc.load_dataset("./tmp/data.zip", IF_ONES)["data"]
+    blobber(DATASET_NAME, "/tmp/data.zip", bucket1, "download")
+    data = Misc.load_dataset("/tmp/data.zip", IF_ONES)["data"]
     d = data.shape[1] - 1
 
     if VARIETY == "linear" or VARIETY == "logistic":
@@ -126,25 +168,19 @@ def initiator(
         wt = np.zeros((d, no_of_unique_labels))
         for i in range(no_of_unique_labels):
             wt[:, i] = FACTOR * np.random.rand(d)
-    np.savetxt("./tmp/weights.csv", wt, delimiter=",")
+    np.savetxt("/tmp/weights.csv", wt, delimiter=",")
 
     mat = Misc.assgn_matrix(data, NO_OF_NODES, CHOICE, c, red)
-    np.savetxt("./tmp/assgn_matrix.csv", mat, delimiter=",")
+    np.savetxt("/tmp/assgn_matrix.csv", mat, delimiter=",")
 
     for i in range(NO_OF_NODES):
         inds = np.where(mat[i, :] == 1)
         temp1 = data[inds]
-        np.savetxt("./tmp/temp1.csv", temp1, delimiter=",")
-        blobber("dataset_{}.csv".format(i + 1), "./tmp/temp1.csv", bucket1, "upload")
+        np.savetxt("/tmp/temp1.csv", temp1, delimiter=",")
+        blobber("dataset_{}.csv".format(i + 1), "/tmp/temp1.csv", bucket1, "upload")
     blobber(
-        "weights_iter{}.csv".format(NO_OF_ITER), "./tmp/weights.csv", bucket1, "upload"
+        "weights_iter{}.csv".format(NO_OF_ITER), "/tmp/weights.csv", bucket1, "upload"
     )
-    blobber("assgn_matrix.csv", "./tmp/assgn_matrix.csv", bucket2, "upload")
+    blobber("assgn_matrix.csv", "/tmp/assgn_matrix.csv", bucket2, "upload")
 
     return "The initiator has executed its job!"
-
-
-# dataset_name=&no_of_iter=0&no_of_nodes=10&choice=StocGD&if_ones=0&c=6&factor=1.0&variety=multi-logistic&d=5
-
-ret = initiator(3, "function0_2d.zip", "StocGD", 0, 0, 3, 1, "linear", 2)
-print(ret)
